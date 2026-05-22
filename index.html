@@ -133,6 +133,7 @@
   .hero__jp {
     font-weight:900; font-size:clamp(1.1rem,3.4vw,2rem); letter-spacing:.6em;
     color:var(--violet); margin:1.1rem 0 0; padding-left:.6em;
+    cursor:pointer;
   }
   .hero__sub {
     max-width:30rem; margin:1.8rem auto 0; color:var(--ink-dim);
@@ -188,6 +189,7 @@
   .card {
     position:relative; border:1px solid var(--edge); border-radius:16px;
     background:var(--bg-2); padding:1.6rem 1.3rem 1.5rem; overflow:hidden;
+    cursor:pointer; min-height:252px;
     transition:transform .3s cubic-bezier(.2,.8,.2,1), border-color .3s;
   }
   .card::after {
@@ -217,6 +219,61 @@
     font-family:"Bruno Ace SC",sans-serif; font-size:.58rem;
     letter-spacing:.16em; color:var(--amber);
   }
+
+  /* --- easter eggs --- */
+  .card__reveal {
+    position:absolute; inset:0; z-index:6;
+    display:flex; flex-direction:column; overflow:hidden;
+    background:var(--bg-2); border-radius:16px;
+    animation:egg-reveal .42s cubic-bezier(.2,.8,.2,1);
+  }
+  .card__reveal img {
+    width:100%; flex:1; min-height:0; object-fit:cover;
+    object-position:center top; filter:saturate(1.12) contrast(1.05);
+  }
+  .card__reveal .quip {
+    padding:.7rem .85rem .55rem; font-size:.78rem; line-height:1.45; color:var(--ink);
+    border-top:1px solid var(--edge);
+    background:linear-gradient(180deg,rgba(255,45,149,.12),transparent);
+  }
+  .card__reveal .hint {
+    padding:0 .85rem .8rem; font-family:"Bruno Ace SC",sans-serif;
+    font-size:.48rem; letter-spacing:.16em; color:var(--ink-dim);
+  }
+  @keyframes egg-reveal {
+    from { opacity:0; transform:scale(.86) rotateX(22deg); }
+    to   { opacity:1; transform:none; }
+  }
+
+  .egg-emoji {
+    position:fixed; top:-9vh; z-index:80;
+    pointer-events:none; user-select:none; will-change:transform;
+    animation:egg-fall linear forwards;
+  }
+  @keyframes egg-fall {
+    to { transform:translateY(118vh) rotate(var(--spin,360deg)); opacity:.15; }
+  }
+
+  .egg-toast {
+    position:fixed; left:50%; bottom:9vh; z-index:90;
+    transform:translateX(-50%) translateY(22px);
+    padding:.85rem 1.5rem; border-radius:99px;
+    background:var(--bg-2); border:1px solid var(--magenta);
+    box-shadow:var(--glow-magenta);
+    font-family:"Bruno Ace",sans-serif; font-size:.82rem; color:#fff;
+    opacity:0; transition:opacity .35s, transform .35s; pointer-events:none;
+    text-align:center;
+  }
+  .egg-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+  @keyframes egg-shake {
+    0%,100% { transform:translate(0,0); }
+    20% { transform:translate(-7px,4px); }
+    40% { transform:translate(6px,-5px); }
+    60% { transform:translate(-5px,-3px); }
+    80% { transform:translate(4px,5px); }
+  }
+  .egg-shaking { animation:egg-shake .5s ease-in-out 2; }
 
   /* --- itinerary --- */
   .route { position:relative; padding-left:2.4rem; }
@@ -273,7 +330,7 @@
   }
   .footer__jp {
     font-weight:900; font-size:clamp(1.6rem,5vw,2.6rem); color:var(--violet);
-    letter-spacing:.4em; padding-left:.4em;
+    letter-spacing:.4em; padding-left:.4em; cursor:pointer;
   }
   .footer__line {
     margin-top:1rem; color:var(--ink-dim); font-size:.82rem;
@@ -492,28 +549,28 @@
       <span class="rule"></span>
     </div>
     <div class="crew" id="crew-grid">
-      <article class="card">
+      <article class="card" data-photo="assets/samuel.png" data-quip="Commitou direto na master de olhos fechados. Fé no deploy, fé na viagem.">
         <div class="card__id">PASSAGEIRO X</div>
         <div class="card__kana">サムエル</div>
         <div class="card__name">Samuel</div>
         <div class="card__role">Não lê documentação, só sente o código. Roteiro feito no vibe coding — se rodar, é vontade do universo.</div>
         <div class="card__seat">SEAT · A1</div>
       </article>
-      <article class="card">
+      <article class="card" data-photo="assets/paulo.webp" data-quip="Aroma de pinho, 99,9% dos germes eliminados. Massagista nível Pinho Sol.">
         <div class="card__id">PASSAGEIRO Y</div>
         <div class="card__kana">パウロ</div>
         <div class="card__name">Paulo</div>
         <div class="card__role">Marca massagem em toda cidade. Diz que é alongamento pré-trem-bala — 14h de voo deixam o lombo em modo legado.</div>
         <div class="card__seat">SEAT · A2</div>
       </article>
-      <article class="card">
+      <article class="card" data-photo="assets/emanuel.png" data-quip="Headphone no ouvido, champanhe no copo. Modo escala de 14h ativado.">
         <div class="card__id">PASSAGEIRO Z</div>
         <div class="card__kana">エマヌエル</div>
         <div class="card__name">Emanuel</div>
         <div class="card__role">Comemora cada escala com champanhe. Estourou a rolha em Istambul antes mesmo de achar o portão.</div>
         <div class="card__seat">SEAT · A3</div>
       </article>
-      <article class="card">
+      <article class="card" data-photo="assets/jonathan.webp" data-quip="Mengão, óculos roxo e drift na mala de rodinha. Tóquio não tá pronta.">
         <div class="card__id">PASSAGEIRO W</div>
         <div class="card__kana">ジョナサン</div>
         <div class="card__name">Jonathan</div>
@@ -996,6 +1053,91 @@
   });
 
   render();
+
+  /* ===================================================================
+     EASTER EGGS
+     =================================================================== */
+  function emojiRain(set, count) {
+    for (var i = 0; i < count; i++) {
+      var s = document.createElement("span");
+      s.className = "egg-emoji";
+      s.textContent = set[Math.floor(Math.random() * set.length)];
+      s.style.left = (Math.random() * 100) + "vw";
+      s.style.fontSize = (1.2 + Math.random() * 2.3) + "rem";
+      var dur = 2.6 + Math.random() * 3;
+      s.style.animationDuration = dur + "s";
+      s.style.animationDelay = (Math.random() * 0.9) + "s";
+      s.style.setProperty("--spin", (Math.random() * 720 - 360) + "deg");
+      document.body.appendChild(s);
+      (function (node, life) {
+        setTimeout(function () { node.remove(); }, life);
+      })(s, (dur + 1.4) * 1000);
+    }
+  }
+
+  var eggToastTimer;
+  function eggToast(msg) {
+    var t = document.getElementById("egg-toast");
+    if (!t) {
+      t = document.createElement("div");
+      t.id = "egg-toast";
+      t.className = "egg-toast";
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    requestAnimationFrame(function () { t.classList.add("show"); });
+    clearTimeout(eggToastTimer);
+    eggToastTimer = setTimeout(function () { t.classList.remove("show"); }, 2800);
+  }
+
+  // egg 1 — tap a crew card to reveal the real passenger
+  document.querySelectorAll(".card[data-photo]").forEach(function (card) {
+    card.addEventListener("click", function () {
+      var open = card.querySelector(".card__reveal");
+      if (open) { open.remove(); return; }
+      var name = card.querySelector(".card__name").textContent;
+      var rev = document.createElement("div");
+      rev.className = "card__reveal";
+      rev.innerHTML =
+        '<img src="' + esc(card.getAttribute("data-photo")) + '" alt="' + esc(name) + '" />' +
+        '<div class="quip">' + esc(card.getAttribute("data-quip")) + '</div>' +
+        '<div class="hint">&#9656; toque pra voltar</div>';
+      card.appendChild(rev);
+    });
+  });
+
+  // egg 2 — tap the Japanese hero line for a sakura shower
+  var heroJp = document.querySelector(".hero__jp");
+  if (heroJp) heroJp.addEventListener("click", function () {
+    emojiRain(["🌸", "🌸", "🌸", "⛩️", "🗼", "✨"], 30);
+  });
+
+  // egg 3 — tap the footer line for a send-off
+  var footerJp = document.querySelector(".footer__jp");
+  if (footerJp) footerJp.addEventListener("click", function () {
+    emojiRain(["🎌", "🍣", "🍜", "🗾", "✈️", "🌸"], 30);
+    eggToast("いってきます！ boa viagem 🎌");
+  });
+
+  // egg 4 — Konami code unleashes matsuri mode
+  var konami = ["arrowup","arrowup","arrowdown","arrowdown","arrowleft","arrowright","arrowleft","arrowright","b","a"];
+  var konamiPos = 0;
+  document.addEventListener("keydown", function (e) {
+    var k = e.key.toLowerCase();
+    if (k === konami[konamiPos]) {
+      konamiPos++;
+      if (konamiPos === konami.length) {
+        konamiPos = 0;
+        emojiRain(["🎌", "🌸", "🏮", "⛩️", "🍣", "🗼", "✨", "🐉"], 80);
+        eggToast("🎌 MATSURI MODE 🎌");
+        var m = document.querySelector("main");
+        m.classList.add("egg-shaking");
+        setTimeout(function () { m.classList.remove("egg-shaking"); }, 1100);
+      }
+    } else {
+      konamiPos = (k === konami[0]) ? 1 : 0;
+    }
+  });
 </script>
 </body>
 </html>
