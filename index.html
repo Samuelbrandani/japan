@@ -396,8 +396,25 @@
     letter-spacing:.18em; color:var(--amber);
   }
   .hotel-card .name { font-size:.86rem; color:var(--ink); margin-top:.3rem; line-height:1.4; }
-  .hotel-card a { color:var(--amber); font-size:.64rem; text-decoration:none; display:inline-block; margin-top:.4rem; }
-  .hotel-card a:hover { text-decoration:underline; }
+  .maps-btn {
+    display:inline-flex; align-items:center; gap:.4rem;
+    padding:.46rem .8rem; border-radius:99px;
+    border:1px solid rgba(31,245,255,.4); background:rgba(31,245,255,.07);
+    color:var(--cyan); text-decoration:none;
+    font-family:"Bruno Ace SC",sans-serif; font-size:.54rem; letter-spacing:.1em;
+    transition:box-shadow .2s, background .2s, transform .12s;
+  }
+  .maps-btn:hover { box-shadow:var(--glow-cyan); background:rgba(31,245,255,.15); }
+  .maps-btn:active { transform:scale(.95); }
+  .maps-btn .pin { width:11px; height:11px; flex-shrink:0; }
+  .maps-btn--amber {
+    border-color:rgba(255,210,74,.45); background:rgba(255,210,74,.09); color:var(--amber);
+  }
+  .maps-btn--amber:hover {
+    box-shadow:0 0 6px var(--amber), 0 0 18px rgba(255,210,74,.5);
+    background:rgba(255,210,74,.17);
+  }
+  .hotel-card .maps-btn { margin-top:.6rem; }
 
   .kcard {
     position:relative; border:1px solid var(--edge); border-radius:10px;
@@ -415,10 +432,14 @@
   .pill--d3 { color:var(--magenta); border-color:rgba(255,45,149,.5); }
   .pill--tickets { color:var(--magenta); border-color:rgba(255,45,149,.5); }
   .kcard__title { font-size:.86rem; line-height:1.45; color:var(--ink); }
-  .kcard__foot { display:flex; justify-content:space-between; align-items:center; margin-top:.55rem; min-height:18px; }
-  .kcard__maps { font-size:.62rem; color:var(--cyan); text-decoration:none; }
-  .kcard__maps:hover { text-shadow:var(--glow-cyan); }
-  .kcard__acts { display:flex; gap:.35rem; }
+  .kcard__foot {
+    display:flex; justify-content:space-between; align-items:center;
+    gap:.5rem; margin-top:.65rem; flex-wrap:wrap;
+  }
+  .kcard__acts { display:flex; gap:.3rem; }
+  .kcard__acts .icon-btn { width:28px; height:28px; font-size:.72rem; }
+  .icon-btn:disabled, .icon-btn.is-off { opacity:.22; cursor:default; }
+  .icon-btn:disabled:hover { color:var(--ink-dim); border-color:var(--edge); }
   @media (hover:hover) {
     .kcard__acts { opacity:0; transition:opacity .15s; }
     .kcard:hover .kcard__acts { opacity:1; }
@@ -809,6 +830,9 @@
     return "pill";
   }
 
+  var PIN = '<svg class="pin" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
+    '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>';
+
   var board = document.getElementById("board");
 
   function render() {
@@ -821,12 +845,14 @@
         '<div class="hotel-card"><div class="lbl">&#8962; HOTEL</div>' +
         '<div class="name">' + esc(col.hotel.name) + '</div>' +
         (col.hotel.maps
-          ? '<a href="' + esc(col.hotel.maps) + '" target="_blank" rel="noopener">&#9656; ver no maps</a>'
+          ? '<a class="maps-btn maps-btn--amber" href="' + esc(col.hotel.maps) +
+            '" target="_blank" rel="noopener">' + PIN + 'VER NO MAPS</a>'
           : '') +
         '</div>'
       ) : "";
 
-      var cardsHtml = col.cards.map(function (c) {
+      var cardsHtml = col.cards.map(function (c, ci) {
+        var first = ci === 0, last = ci === col.cards.length - 1;
         var tags = '<span class="' + dayPillClass(c.day) + '">' +
           (c.day ? esc(c.day) : "—") + '</span>';
         if (c.tickets) tags += '<span class="pill pill--tickets">&#127903; comprar entradas</span>';
@@ -835,9 +861,13 @@
           '<div class="kcard__title">' + esc(c.title) + '</div>' +
           '<div class="kcard__foot">' +
             (c.maps
-              ? '<a class="kcard__maps" href="' + esc(c.maps) + '" target="_blank" rel="noopener">&#9656; maps</a>'
+              ? '<a class="maps-btn" href="' + esc(c.maps) + '" target="_blank" rel="noopener">' + PIN + 'MAPS</a>'
               : '<span></span>') +
             '<span class="kcard__acts">' +
+              '<button class="icon-btn' + (first ? " is-off" : "") + '" data-act="up-card"' +
+                (first ? " disabled" : "") + ' title="Subir">&#9650;</button>' +
+              '<button class="icon-btn' + (last ? " is-off" : "") + '" data-act="down-card"' +
+                (last ? " disabled" : "") + ' title="Descer">&#9660;</button>' +
               '<button class="icon-btn" data-act="edit-card" title="Editar">&#9998;</button>' +
               '<button class="icon-btn del" data-act="del-card" title="Excluir">&#10005;</button>' +
             '</span>' +
@@ -889,6 +919,12 @@
     } else if (act === "del-card") {
       var k2 = btn.closest(".kcard");
       delCard(k2.getAttribute("data-col"), k2.getAttribute("data-card"));
+    } else if (act === "up-card") {
+      var ku = btn.closest(".kcard");
+      moveCard(ku.getAttribute("data-col"), ku.getAttribute("data-card"), -1);
+    } else if (act === "down-card") {
+      var kd = btn.closest(".kcard");
+      moveCard(kd.getAttribute("data-col"), kd.getAttribute("data-card"), 1);
     } else if (act === "edit-col") {
       openColModal(btn.getAttribute("data-col"));
     } else if (act === "del-col") {
@@ -989,6 +1025,20 @@
     }
     if (!confirm('Excluir "' + (card ? card.title : "") + '"?')) return;
     col.cards = col.cards.filter(function (c) { return c.id !== cardId; });
+    render();
+  }
+
+  function moveCard(colId, cardId, dir) {
+    var col = findCol(colId);
+    var idx = -1;
+    for (var i = 0; i < col.cards.length; i++) {
+      if (col.cards[i].id === cardId) { idx = i; break; }
+    }
+    var next = idx + dir;
+    if (idx < 0 || next < 0 || next >= col.cards.length) return;
+    var tmp = col.cards[idx];
+    col.cards[idx] = col.cards[next];
+    col.cards[next] = tmp;
     render();
   }
 
