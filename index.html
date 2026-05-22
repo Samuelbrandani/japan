@@ -1380,6 +1380,431 @@
       margin-top: 1.4rem;
     }
 
+    /* --- pachinko slot machine --- */
+    .slot {
+      max-width: 680px;
+      margin-inline: auto;
+    }
+
+    .slot__stats {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .slot__stat {
+      flex: 1;
+      border: 1px solid var(--edge);
+      border-radius: 12px;
+      background: var(--bg-2);
+      padding: .9rem 1rem;
+      text-align: center;
+    }
+
+    .slot__statnum {
+      font-family: "Bruno Ace", sans-serif;
+      font-size: clamp(1.7rem, 6vw, 2.6rem);
+      color: #fff;
+      text-shadow: var(--glow-cyan);
+      font-variant-numeric: tabular-nums;
+      transition: color .2s, text-shadow .2s;
+    }
+
+    .slot__statnum--score {
+      text-shadow: var(--glow-magenta);
+    }
+
+    .slot__statnum.empty {
+      color: var(--magenta);
+      text-shadow: var(--glow-magenta);
+      animation: slot-blink 1s steps(1) infinite;
+    }
+
+    @keyframes slot-blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .25;
+      }
+    }
+
+    .slot__statlbl {
+      font-family: "Bruno Ace SC", sans-serif;
+      font-size: .54rem;
+      letter-spacing: .2em;
+      color: var(--ink-dim);
+      margin-top: .4rem;
+    }
+
+    .slot__machine {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      gap: .9rem;
+    }
+
+    .reels {
+      position: relative;
+      display: flex;
+      gap: 8px;
+      padding: 14px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #14102a, #07060f);
+      border: 2px solid rgba(155, 92, 255, .5);
+      box-shadow: 0 0 32px rgba(155, 92, 255, .35), inset 0 0 26px rgba(0, 0, 0, .8);
+    }
+
+    .reel {
+      width: 84px;
+      height: 234px;
+      overflow: hidden;
+      border-radius: 9px;
+      background: #050409;
+      border: 1px solid rgba(31, 245, 255, .25);
+      box-shadow: inset 0 14px 18px rgba(0, 0, 0, .9), inset 0 -14px 18px rgba(0, 0, 0, .9);
+    }
+
+    .reel__strip {
+      display: flex;
+      flex-direction: column;
+      will-change: transform;
+    }
+
+    .reel__sym {
+      height: 78px;
+      line-height: 78px;
+      text-align: center;
+      font-size: 2.7rem;
+      flex-shrink: 0;
+    }
+
+    .reels__payline {
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      top: 50%;
+      height: 80px;
+      transform: translateY(-50%);
+      border-radius: 8px;
+      border: 2px solid var(--magenta);
+      box-shadow: var(--glow-magenta), inset 0 0 14px rgba(255, 45, 149, .3);
+      pointer-events: none;
+    }
+
+    .reels.win .reels__payline {
+      animation: payline-flash .25s steps(1) 6;
+    }
+
+    @keyframes payline-flash {
+
+      0%,
+      100% {
+        border-color: var(--magenta);
+        box-shadow: var(--glow-magenta);
+      }
+
+      50% {
+        border-color: var(--cyan);
+        box-shadow: var(--glow-cyan);
+      }
+    }
+
+    /* lever */
+    .lever {
+      position: relative;
+      width: 58px;
+      flex-shrink: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .lever__slot {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 26px;
+      height: 56px;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #1a1530, #050409);
+      border: 1px solid rgba(155, 92, 255, .5);
+    }
+
+    .lever__arm {
+      position: absolute;
+      left: 50%;
+      bottom: 26px;
+      width: 9px;
+      height: 150px;
+      margin-left: -4.5px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #3a3358, #8a83b8, #3a3358);
+      transform-origin: 50% 100%;
+      transform: rotate(0deg);
+      transition: transform .26s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .lever.pulled .lever__arm {
+      transform: rotate(82deg);
+    }
+
+    .lever__knob {
+      position: absolute;
+      top: -16px;
+      left: 50%;
+      width: 34px;
+      height: 34px;
+      margin-left: -17px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 34% 30%, #ff8ac0, var(--magenta) 55%, #8e1252);
+      box-shadow: var(--glow-magenta);
+    }
+
+    .lever:hover .lever__knob {
+      box-shadow: 0 0 8px #ff2d95, 0 0 30px rgba(255, 45, 149, .9);
+    }
+
+    .lever.spinning {
+      cursor: default;
+      opacity: .55;
+    }
+
+    .slot__msg {
+      text-align: center;
+      margin-top: 1.3rem;
+      font-family: "Bruno Ace SC", sans-serif;
+      font-size: .72rem;
+      letter-spacing: .1em;
+      color: var(--ink-dim);
+      min-height: 1.4em;
+    }
+
+    .slot__msg.win {
+      color: var(--cyan);
+      text-shadow: var(--glow-cyan);
+    }
+
+    .slot__msg.jackpot {
+      color: var(--amber);
+      text-shadow: 0 0 8px var(--amber), 0 0 22px rgba(255, 210, 74, .7);
+    }
+
+    .slot__pay {
+      text-align: center;
+      margin-top: .7rem;
+      font-size: .7rem;
+      color: var(--ink-dim);
+      line-height: 1.7;
+    }
+
+    .slot__pay b {
+      color: var(--amber);
+    }
+
+    .slot__rank {
+      margin-top: 2rem;
+      border: 1px solid var(--edge);
+      border-radius: 14px;
+      background: rgba(12, 10, 26, .78);
+      padding: 1.2rem;
+    }
+
+    .slot__rankhead {
+      display: flex;
+      align-items: baseline;
+      gap: .7rem;
+      margin-bottom: .9rem;
+    }
+
+    .slot__ranktitle {
+      font-family: "Bruno Ace", sans-serif;
+      font-size: .9rem;
+      color: #fff;
+    }
+
+    .slot__rankjp {
+      font-size: .7rem;
+      color: var(--ink-dim);
+      letter-spacing: .2em;
+    }
+
+    .slot__namerow {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      flex-wrap: wrap;
+      padding-bottom: .9rem;
+      margin-bottom: .7rem;
+      border-bottom: 1px dashed var(--edge);
+    }
+
+    .slot__namelbl {
+      font-family: "Bruno Ace SC", sans-serif;
+      font-size: .54rem;
+      letter-spacing: .16em;
+      color: var(--ink-dim);
+    }
+
+    .slot__nameval {
+      flex: 1;
+      min-width: 80px;
+      color: var(--cyan);
+      font-size: .92rem;
+    }
+
+    .slot__namerow .btn {
+      padding: .42rem .7rem;
+      font-size: .52rem;
+    }
+
+    .slot__ranklist {
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+    }
+
+    .slot__empty {
+      text-align: center;
+      color: var(--ink-dim);
+      font-size: .82rem;
+      padding: .6rem;
+    }
+
+    .rankrow {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      padding: .5rem .7rem;
+      border: 1px solid var(--edge);
+      border-radius: 9px;
+      background: var(--bg);
+    }
+
+    .rankrow.me {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 1px rgba(31, 245, 255, .3), var(--glow-cyan);
+    }
+
+    .rankrow__pos {
+      font-family: "Bruno Ace", sans-serif;
+      font-size: .82rem;
+      color: var(--ink-dim);
+      width: 1.7rem;
+      flex-shrink: 0;
+    }
+
+    .rankrow:nth-child(1) .rankrow__pos {
+      color: var(--amber);
+    }
+
+    .rankrow__name {
+      flex: 1;
+      min-width: 0;
+      font-size: .9rem;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rankrow__score {
+      font-family: "Bruno Ace", sans-serif;
+      font-size: .9rem;
+      color: var(--magenta);
+      text-shadow: var(--glow-magenta);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .name-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-bottom: .8rem;
+    }
+
+    .name-chip {
+      padding: .42rem .7rem !important;
+      font-size: .54rem !important;
+    }
+
+    /* jump scare overlay */
+    .jumpscare {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      background: #000;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .jumpscare.show {
+      display: flex;
+    }
+
+    .jumpscare__warp {
+      width: 100%;
+      height: 100%;
+    }
+
+    .jumpscare video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .jumpscare.psycho {
+      animation: psycho-strobe .1s steps(1) infinite;
+    }
+
+    .jumpscare.psycho .jumpscare__warp {
+      animation: psycho-zoom .28s ease-in-out infinite alternate;
+    }
+
+    @keyframes psycho-strobe {
+      0% {
+        filter: hue-rotate(0deg) saturate(3.5) contrast(1.5);
+      }
+
+      20% {
+        filter: hue-rotate(80deg) saturate(5) invert(1);
+      }
+
+      40% {
+        filter: hue-rotate(160deg) saturate(6) contrast(2.4);
+      }
+
+      60% {
+        filter: hue-rotate(240deg) saturate(5) invert(1) contrast(1.8);
+      }
+
+      80% {
+        filter: hue-rotate(320deg) saturate(7) contrast(2);
+      }
+    }
+
+    @keyframes psycho-zoom {
+      from {
+        transform: scale(1) rotate(-6deg);
+      }
+
+      to {
+        transform: scale(1.28) rotate(7deg);
+      }
+    }
+
+    @media (max-width:430px) {
+      .slot__machine {
+        transform: scale(.84);
+        transform-origin: top center;
+      }
+    }
+
     /* --- responsive --- */
     @media (max-width:760px) {
       .nav-links {
@@ -1431,6 +1856,7 @@
           <a href="#rota">ROTA</a>
           <a href="#roteiro">ROTEIRO</a>
           <a href="#dados">DADOS</a>
+          <a href="#pachinko">PACHINKO</a>
         </div>
       </div>
     </nav>
@@ -1626,6 +2052,70 @@
         </div>
       </section>
 
+      <!-- PACHINKO -->
+      <section id="pachinko">
+        <div class="sec-head">
+          <span class="num">05</span>
+          <h2>PACHINKO 777</h2>
+          <span class="jp">パチンコ</span>
+          <span class="rule"></span>
+        </div>
+
+        <div class="slot">
+          <div class="slot__stats">
+            <div class="slot__stat">
+              <div class="slot__statnum" id="slot-spins">0</div>
+              <div class="slot__statlbl">GIROS</div>
+            </div>
+            <div class="slot__stat">
+              <div class="slot__statnum slot__statnum--score" id="slot-score">0</div>
+              <div class="slot__statlbl">SEUS PONTOS</div>
+            </div>
+          </div>
+
+          <div class="slot__machine">
+            <div class="reels" id="slot-reels">
+              <div class="reel">
+                <div class="reel__strip"></div>
+              </div>
+              <div class="reel">
+                <div class="reel__strip"></div>
+              </div>
+              <div class="reel">
+                <div class="reel__strip"></div>
+              </div>
+              <span class="reels__payline"></span>
+            </div>
+            <div class="lever" id="slot-lever" role="button" tabindex="0" aria-label="Puxar manivela">
+              <span class="lever__slot"></span>
+              <span class="lever__arm">
+                <span class="lever__knob"></span>
+              </span>
+            </div>
+          </div>
+
+          <div class="slot__msg" id="slot-msg">Puxe a manivela para girar 🎰</div>
+
+          <div class="slot__pay">
+            3&times;&#9992;&#65039; <b>JACKPOT 1000</b> &middot; 3&times;7&#65039;&#8419; 500 &middot;
+            3&times; iguais 150 +giro &middot; 2&times; iguais 15
+          </div>
+
+          <div class="slot__rank">
+            <div class="slot__rankhead">
+              <span class="slot__ranktitle">&#127942; RANKING AO VIVO</span>
+              <span class="slot__rankjp">順位</span>
+            </div>
+            <div class="slot__namerow">
+              <span class="slot__namelbl">VOCÊ</span>
+              <span class="slot__nameval" id="slot-nameval">sem nome</span>
+              <button class="btn btn--ghost" id="slot-namebtn">trocar nome</button>
+            </div>
+            <div class="slot__ranklist" id="slot-ranklist"></div>
+          </div>
+        </div>
+      </section>
+
     </div>
 
     <footer>
@@ -1645,6 +2135,13 @@
         <button class="btn btn--ghost" id="modal-cancel">CANCELAR</button>
         <button class="btn" id="modal-save">SALVAR</button>
       </div>
+    </div>
+  </div>
+
+  <!-- jump scare overlay -->
+  <div class="jumpscare" id="jumpscare">
+    <div class="jumpscare__warp">
+      <video id="js-video" src="assets/video/jumpscare.mp4" playsinline preload="auto"></video>
     </div>
   </div>
 
@@ -2129,6 +2626,7 @@
       input.value = "";
       playSfx("wow");
       renderPlaylist();
+      if (typeof slotAddSpins === "function") slotAddSpins(3);
     }
     document.getElementById("track-add-btn").addEventListener("click", addTrack);
     document.getElementById("track-input").addEventListener("keydown", function (e) {
@@ -2274,7 +2772,9 @@
       lord: "assets/sfx/lord.mp3",
       bob: "assets/sfx/bob.mp3",
       plane: "assets/sfx/plane.mp3",
-      yamede: "assets/sfx/yamede.mp3"
+      yamede: "assets/sfx/yamede.mp3",
+      slot: "assets/sfx/slot.mp3",
+      scream: "assets/sfx/scream.mp3"
     };
     var crewSfxToggle = 0;
     function playSfx(name) {
@@ -2456,6 +2956,296 @@
         emojiBurst(e.clientX, e.clientY, jpEggs[jp.textContent.trim()] || ["✨"], 14);
       });
     });
+
+    /* ===================================================================
+       PACHINKO 777 — slot machine + jump scare + live ranking
+       =================================================================== */
+    var SYM_H = 78, STRIP_LEN = 44;
+    var SLOT_COMMON = ["⛩️", "🍣", "🍜", "🚄", "🌸", "🎌"];
+    var SLOT_SEVEN = "7️⃣", SLOT_JACK = "✈️";
+    var SLOT_ALL = SLOT_COMMON.concat([SLOT_SEVEN, SLOT_JACK]);
+    var SLOT_KEY = "jp2026-slot-v1", SLOT_NAME_KEY = "jp2026-slot-name", SLOT_ID_KEY = "jp2026-slot-id";
+
+    var slotSpins = 5, slotScore = 0;
+    try {
+      var slotSaved = JSON.parse(localStorage.getItem(SLOT_KEY) || "null");
+      if (slotSaved) { slotSpins = slotSaved.spins || 0; slotScore = slotSaved.score || 0; }
+    } catch (e) { }
+
+    var slotName = "";
+    try { slotName = localStorage.getItem(SLOT_NAME_KEY) || ""; } catch (e) { }
+    var slotMyId = "";
+    try {
+      slotMyId = localStorage.getItem(SLOT_ID_KEY) || "";
+      if (!slotMyId) { slotMyId = uid(); localStorage.setItem(SLOT_ID_KEY, slotMyId); }
+    } catch (e) { slotMyId = uid(); }
+
+    var slotReelsEl = document.getElementById("slot-reels");
+    var slotReelEls = slotReelsEl ? slotReelsEl.querySelectorAll(".reel") : [];
+    var slotLeverEl = document.getElementById("slot-lever");
+    var slotMsgEl = document.getElementById("slot-msg");
+    var slotSpinsEl = document.getElementById("slot-spins");
+    var slotScoreEl = document.getElementById("slot-score");
+    var slotNameValEl = document.getElementById("slot-nameval");
+    var slotRankListEl = document.getElementById("slot-ranklist");
+
+    var slotSpinning = false, slotRankRef = null, slotRankData = {};
+
+    function slotRand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    function slotPersist() {
+      try { localStorage.setItem(SLOT_KEY, JSON.stringify({ spins: slotSpins, score: slotScore })); } catch (e) { }
+    }
+
+    function slotUpdateStats() {
+      if (!slotSpinsEl) return;
+      slotSpinsEl.textContent = slotSpins;
+      slotSpinsEl.classList.toggle("empty", slotSpins <= 0);
+      slotScoreEl.textContent = slotScore;
+    }
+
+    function slotSetMsg(text, cls) {
+      if (!slotMsgEl) return;
+      slotMsgEl.textContent = text;
+      slotMsgEl.className = "slot__msg" + (cls ? " " + cls : "");
+    }
+
+    // grants spins — called by the playlist when a track is added
+    function slotAddSpins(n) {
+      var was = slotSpins;
+      slotSpins += n;
+      slotPersist();
+      slotUpdateStats();
+      if (was <= 0) slotSetMsg("Puxe a manivela para girar 🎰", "");
+      eggToast("🎰 +" + n + " giros no Pachinko!");
+    }
+
+    function slotBuildStrip(reelEl, finalSym) {
+      var strip = reelEl.querySelector(".reel__strip"), html = "";
+      for (var i = 0; i < STRIP_LEN; i++) {
+        html += '<div class="reel__sym">' + ((i === STRIP_LEN - 2) ? finalSym : slotRand(SLOT_ALL)) + '</div>';
+      }
+      strip.innerHTML = html;
+    }
+
+    function slotSpinReel(reelEl, finalSym, dur, done) {
+      slotBuildStrip(reelEl, finalSym);
+      var strip = reelEl.querySelector(".reel__strip");
+      strip.style.transition = "none";
+      strip.style.transform = "translateY(0px)";
+      strip.offsetHeight;
+      strip.style.transition = "transform " + dur + "s cubic-bezier(.16,.85,.28,1.02)";
+      strip.style.transform = "translateY(-" + ((STRIP_LEN - 3) * SYM_H) + "px)";
+      if (done) setTimeout(done, dur * 1000);
+    }
+
+    function slotRollOutcome() {
+      var r = Math.random();
+      if (r < 0.02) return { kind: "jackpot", syms: [SLOT_JACK, SLOT_JACK, SLOT_JACK], pts: 1000 };
+      if (r < 0.05) return { kind: "seven", syms: [SLOT_SEVEN, SLOT_SEVEN, SLOT_SEVEN], pts: 500 };
+      if (r < 0.11) { var s = slotRand(SLOT_COMMON); return { kind: "triple", syms: [s, s, s], pts: 150, free: 1 }; }
+      if (r < 0.24) {
+        var a = slotRand(SLOT_ALL), b;
+        do { b = slotRand(SLOT_ALL); } while (b === a);
+        var two = [a, a, b];
+        for (var i = two.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1)), t = two[i]; two[i] = two[j]; two[j] = t;
+        }
+        return { kind: "double", syms: two, pts: 15 };
+      }
+      var pool = SLOT_ALL.slice(), pick = [];
+      for (var k = 0; k < 3; k++) pick.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+      return { kind: "lose", syms: pick, pts: 0 };
+    }
+
+    function slotEnterFS() {
+      var el = document.documentElement;
+      var fn = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+      if (fn && !document.fullscreenElement && !document.webkitFullscreenElement) {
+        try { var p = fn.call(el); if (p && p.catch) p.catch(function () { }); } catch (e) { }
+      }
+    }
+
+    function slotExitFS() {
+      var fn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+      if (fn && (document.fullscreenElement || document.webkitFullscreenElement)) {
+        try { var p = fn.call(document); if (p && p.catch) p.catch(function () { }); } catch (e) { }
+      }
+    }
+
+    function slotCountUp(from, to) {
+      var dur = 700, t0 = performance.now();
+      (function step(now) {
+        var k = Math.min(1, (now - t0) / dur);
+        slotScoreEl.textContent = Math.round(from + (to - from) * k);
+        if (k < 1) requestAnimationFrame(step);
+        else slotScoreEl.textContent = to;
+      })(performance.now());
+    }
+
+    function slotPull() {
+      if (slotSpinning) return;
+      if (!slotName) { slotOpenNameModal(); return; }
+      if (slotSpins <= 0) {
+        slotSetMsg("Sem giros! Adicione uma música na playlist 🎵", "");
+        slotSpinsEl.classList.add("empty");
+        var pl = document.querySelector(".playlist");
+        if (pl) pl.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+      document.getElementById("pachinko").scrollIntoView({ behavior: "smooth", block: "start" });
+
+      slotSpinning = true;
+      slotSpins--;
+      slotPersist();
+      slotUpdateStats();
+      slotSetMsg("girando…", "");
+      playSfx("slot");
+      slotReelsEl.classList.remove("win");
+      slotLeverEl.classList.add("pulled", "spinning");
+      setTimeout(function () { slotLeverEl.classList.remove("pulled"); }, 320);
+
+      var oc = slotRollOutcome();
+      // outcome is rolled synchronously inside the click — so fullscreen,
+      // which the browser only allows during a user gesture, can fire here
+      // and only when the spin is already a win.
+      if (oc.pts > 0) slotEnterFS();
+      var durs = [1.9, 2.5, 3.1];
+      slotSpinReel(slotReelEls[0], oc.syms[0], durs[0]);
+      slotSpinReel(slotReelEls[1], oc.syms[1], durs[1]);
+      slotSpinReel(slotReelEls[2], oc.syms[2], durs[2], function () {
+        setTimeout(function () { slotResolve(oc); }, 260);
+      });
+    }
+
+    function slotResolve(oc) {
+      slotSpinning = false;
+      slotLeverEl.classList.remove("spinning");
+      if (oc.pts > 0) {
+        var before = slotScore;
+        slotScore += oc.pts;
+        if (oc.free) slotSpins += oc.free;
+        slotPersist();
+        slotUpdateStats();
+        slotPushRank();
+        slotReelsEl.classList.add("win");
+        slotJumpScare(oc, before);
+      } else {
+        slotSetMsg("não foi dessa vez… 🎰", "");
+      }
+    }
+
+    function slotJumpScare(oc, prevScore) {
+      var js = document.getElementById("jumpscare");
+      var vid = document.getElementById("js-video");
+      js.classList.add("show", "psycho");
+      try { vid.currentTime = 0; var pv = vid.play(); if (pv && pv.catch) pv.catch(function () { }); } catch (e) { }
+      playSfx("scream");
+      var dur = oc.kind === "jackpot" ? 3000 : 2300;
+      setTimeout(function () {
+        js.classList.remove("show", "psycho");
+        try { vid.pause(); } catch (e) { }
+        slotExitFS();
+        slotReelsEl.classList.remove("win");
+        slotCountUp(prevScore, slotScore);
+        if (oc.kind === "jackpot") {
+          slotSetMsg("✈️ JACKPOT 1000 ✈️", "jackpot");
+          emojiRain(["🎰", "✈️", "💰", "🎌", "✨", "🏮", "🐉"], 90);
+          playSfx("aura");
+          eggToast("✈️ JACKPOT — 1000 PONTOS ✈️");
+        } else if (oc.kind === "seven") {
+          slotSetMsg("7️⃣ 7️⃣ 7️⃣ — +500 pontos!", "win");
+          emojiRain(["7️⃣", "💰", "✨"], 40);
+        } else if (oc.kind === "triple") {
+          slotSetMsg("3 iguais! +150 pontos e +1 giro 🎉", "win");
+        } else {
+          slotSetMsg("par! +15 pontos 🎰", "win");
+        }
+      }, dur);
+    }
+
+    function slotRenderRank() {
+      if (!slotRankListEl) return;
+      var arr = [];
+      for (var id in slotRankData) {
+        if (slotRankData.hasOwnProperty(id) && slotRankData[id]) {
+          arr.push({ id: id, name: slotRankData[id].name || "anônimo", score: slotRankData[id].score || 0 });
+        }
+      }
+      arr.sort(function (a, b) { return b.score - a.score; });
+      if (!arr.length) {
+        slotRankListEl.innerHTML = '<div class="slot__empty">Ninguém jogou ainda — seja o primeiro 🎰</div>';
+        return;
+      }
+      slotRankListEl.innerHTML = arr.slice(0, 10).map(function (e, i) {
+        return '<div class="rankrow' + (e.id === slotMyId ? " me" : "") + '">' +
+          '<span class="rankrow__pos">' + (i + 1) + '</span>' +
+          '<span class="rankrow__name">' + esc(e.name) + '</span>' +
+          '<span class="rankrow__score">' + e.score + '</span></div>';
+      }).join("");
+    }
+
+    function slotPushRank() {
+      slotRankData[slotMyId] = { name: slotName, score: slotScore };
+      if (slotRankRef && slotName) {
+        try { slotRankRef.child(slotMyId).set({ name: slotName, score: slotScore }); } catch (e) { }
+      }
+      slotRenderRank();
+    }
+
+    function slotInitFirebase() {
+      if (typeof firebase === "undefined") return;
+      try {
+        slotRankRef = firebase.database().ref("ranking");
+        slotRankRef.on("value", function (snap) {
+          slotRankData = snap.val() || {};
+          if (slotName && (!slotRankData[slotMyId] || (slotRankData[slotMyId].score || 0) < slotScore)) {
+            slotRankData[slotMyId] = { name: slotName, score: slotScore };
+          }
+          slotRenderRank();
+        }, function () { slotRankRef = null; });
+      } catch (e) { slotRankRef = null; }
+    }
+
+    function slotOpenNameModal() {
+      modalTitle.textContent = "Seu nome no ranking";
+      modalFields.innerHTML =
+        '<div class="field"><label>Escolha rápida</label><div class="name-chips" id="name-chips">' +
+        ["Samuel", "Paulo", "Emanuel", "Jonathan"].map(function (n) {
+          return '<button type="button" class="btn name-chip">' + n + '</button>';
+        }).join("") + '</div></div>' +
+        fieldInput("f-name", "Ou digite o seu", slotName || "");
+      modal.classList.add("open");
+      var inp = document.getElementById("f-name");
+      inp.focus();
+      document.getElementById("name-chips").addEventListener("click", function (e) {
+        var b = e.target.closest(".name-chip");
+        if (b) inp.value = b.textContent;
+      });
+      saveHandler = function () {
+        var v = document.getElementById("f-name").value.trim();
+        if (!v) { document.getElementById("f-name").focus(); return; }
+        slotName = v;
+        try { localStorage.setItem(SLOT_NAME_KEY, v); } catch (e) { }
+        if (slotNameValEl) slotNameValEl.textContent = v;
+        slotPushRank();
+        closeModal();
+      };
+    }
+
+    if (slotReelsEl) {
+      slotLeverEl.addEventListener("click", slotPull);
+      slotLeverEl.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); slotPull(); }
+      });
+      document.getElementById("slot-namebtn").addEventListener("click", slotOpenNameModal);
+      slotReelEls.forEach(function (r) { slotBuildStrip(r, slotRand(SLOT_ALL)); });
+      if (slotName && slotNameValEl) slotNameValEl.textContent = slotName;
+      slotUpdateStats();
+      if (slotName) slotRankData[slotMyId] = { name: slotName, score: slotScore };
+      slotRenderRank();
+      slotInitFirebase();
+    }
   </script>
 </body>
 
