@@ -338,7 +338,16 @@
   }
 
   /* --- itinerary board (kanban + crud) --- */
-  .board-tools { display:flex; flex-wrap:wrap; gap:.7rem; margin-bottom:1.6rem; }
+  .board-tools { display:flex; flex-wrap:wrap; align-items:center; gap:.7rem; margin-bottom:1.6rem; }
+  .sync-pill {
+    display:inline-flex; align-items:center; gap:.4rem;
+    font-family:"Bruno Ace SC",sans-serif; font-size:.56rem; letter-spacing:.14em;
+    padding:.6rem .9rem; border-radius:99px;
+    border:1px solid var(--edge); color:var(--ink-dim);
+  }
+  .sync-pill.live {
+    color:var(--cyan); border-color:rgba(31,245,255,.5); box-shadow:var(--glow-cyan);
+  }
   .btn {
     font-family:"Bruno Ace SC",sans-serif; font-size:.6rem; letter-spacing:.16em;
     padding:.62rem 1rem; border-radius:9px; cursor:pointer; text-decoration:none;
@@ -655,10 +664,10 @@
       <span class="rule"></span>
     </div>
     <div class="board-tools">
+      <span class="sync-pill" id="sync-pill" title="Sincronização">&#9679; LOCAL</span>
       <a class="btn" href="https://www.google.com/maps/dir/Tokyo,+Japan/Kyoto,+Japan/Osaka,+Japan/Tokyo,+Japan" target="_blank" rel="noopener">&#9656; ROTA NO GOOGLE MAPS</a>
       <button class="btn" id="add-col-btn">+ NOVA CIDADE</button>
       <button class="btn btn--ghost" id="export-btn">&#10515; EXPORTAR JSON</button>
-      <button class="btn btn--magenta btn--ghost" id="reset-btn">&#8634; RESTAURAR</button>
     </div>
     <div class="board" id="board"></div>
   </section>
@@ -701,6 +710,8 @@
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script>
   // departure: 18 Jun 2026, 16:35 São Paulo time (BRT, UTC-3)
   var DEPARTURE = new Date("2026-06-18T16:35:00-03:00").getTime();
@@ -751,6 +762,18 @@
   }
 
   var STORE_KEY = "jp2026-itinerary-v1";
+
+  // === Firebase — sincronização ao vivo entre os 4 ====================
+  // Cole a config do seu projeto Firebase (Realtime Database) abaixo.
+  // Enquanto os valores forem "COLE_AQUI", o site roda em modo LOCAL.
+  var FIREBASE_CONFIG = {
+    apiKey: "COLE_AQUI",
+    authDomain: "COLE_AQUI",
+    databaseURL: "COLE_AQUI",
+    projectId: "COLE_AQUI"
+  };
+  var fbRef = null;
+  var applyingRemote = false;
 
   var DEFAULT_ITIN = [
     { id:"geral", city:"Geral", sub:"visão macro", hotel:null, cards:[
@@ -808,6 +831,9 @@
   }
   function saveItin() {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(itin)); } catch (e) {}
+    if (fbRef && !applyingRemote) {
+      fbRef.set(itin);
+    }
   }
   function uid() {
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
@@ -1086,11 +1112,6 @@
   document.getElementById("add-col-btn").addEventListener("click", function () {
     openColModal(null);
   });
-  document.getElementById("reset-btn").addEventListener("click", function () {
-    if (!confirm("Restaurar o roteiro original? Suas mudanças serão perdidas.")) return;
-    itin = JSON.parse(JSON.stringify(DEFAULT_ITIN));
-    render();
-  });
   document.getElementById("export-btn").addEventListener("click", function () {
     var blob = new Blob([JSON.stringify(itin, null, 2)], { type: "application/json" });
     var a = document.createElement("a");
@@ -1102,7 +1123,57 @@
     URL.revokeObjectURL(a.href);
   });
 
+  function setSyncStatus(live) {
+    var p = document.getElementById("sync-pill");
+    if (!p) return;
+    if (live) {
+      p.textContent = "● AO VIVO";
+      p.classList.add("live");
+      p.title = "Roteiro sincronizado entre todos em tempo real";
+    } else {
+      p.textContent = "● LOCAL";
+      p.classList.remove("live");
+      p.title = "Salvo só neste navegador — configure o Firebase para compartilhar";
+    }
+  }
+
+  function initFirebase() {
+    setSyncStatus(false);
+    if (typeof firebase === "undefined") return;
+    if (!FIREBASE_CONFIG.apiKey || FIREBASE_CONFIG.apiKey.indexOf("COLE") === 0) return;
+    try {
+      firebase.initializeApp(FIREBASE_CONFIG);
+      fbRef = firebase.database().ref("itinerary");
+      fbRef.on("value", function (snap) {
+        var data = snap.val();
+        if (!data) { fbRef.set(itin); return; }   // empty DB — seed it
+        if (!Array.isArray(data)) {
+          data = Object.keys(data).map(function (k) { return data[k]; });
+        }
+        data.forEach(function (col) {
+          if (!Array.isArray(col.cards)) {
+            col.cards = col.cards
+              ? Object.keys(col.cards).map(function (k) { return col.cards[k]; })
+              : [];
+          }
+        });
+        applyingRemote = true;
+        itin = data;
+        itin.forEach(function (c, i) {
+          if (collapsed[c.id] === undefined) collapsed[c.id] = i !== 0;
+        });
+        render();
+        applyingRemote = false;
+      });
+      setSyncStatus(true);
+    } catch (e) {
+      fbRef = null;
+      setSyncStatus(false);
+    }
+  }
+
   render();
+  initFirebase();
 
   /* ===================================================================
      EASTER EGGS
