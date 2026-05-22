@@ -470,6 +470,51 @@
   }
   .col--add:hover { color:var(--magenta); border-color:var(--magenta); }
 
+  /* --- playlist --- */
+  .playlist {
+    max-width:680px; margin:2.2rem auto 0;
+    border:1px solid var(--edge); border-radius:14px;
+    background:rgba(12,10,26,.78); padding:1.2rem;
+  }
+  .playlist__head { display:flex; align-items:baseline; gap:.7rem; margin-bottom:1rem; flex-wrap:wrap; }
+  .playlist__title { font-family:"Bruno Ace",sans-serif; font-size:.95rem; color:#fff; }
+  .playlist__jp { font-size:.7rem; color:var(--ink-dim); letter-spacing:.2em; }
+  .playlist__add { display:flex; gap:.6rem; flex-wrap:wrap; }
+  .playlist__add input {
+    flex:1; min-width:180px; padding:.7rem .8rem; border-radius:9px;
+    background:var(--bg); border:1px solid var(--edge); color:var(--ink);
+    font-family:"Zen Kaku Gothic New",sans-serif; font-size:.86rem;
+  }
+  .playlist__add input:focus {
+    outline:none; border-color:var(--magenta);
+    box-shadow:0 0 0 2px rgba(255,45,149,.15);
+  }
+  .playlist__add .btn:hover { border-color:var(--magenta); color:var(--magenta); box-shadow:var(--glow-magenta); }
+  .playlist__list { display:flex; flex-direction:column; gap:.5rem; margin-top:1rem; }
+  .playlist__empty {
+    font-size:.82rem; color:var(--ink-dim); text-align:center; padding:.7rem;
+  }
+  .track {
+    display:flex; align-items:center; gap:.7rem;
+    border:1px solid var(--edge); border-radius:10px;
+    background:var(--bg); padding:.6rem .7rem;
+  }
+  .track__icon {
+    width:32px; height:32px; flex-shrink:0; border-radius:8px;
+    display:grid; place-items:center; font-size:1rem;
+    background:rgba(255,45,149,.12); border:1px solid rgba(255,45,149,.4);
+  }
+  .track__main { flex:1; min-width:0; }
+  .track__src {
+    font-family:"Bruno Ace SC",sans-serif; font-size:.5rem;
+    letter-spacing:.14em; color:var(--magenta);
+  }
+  .track__url {
+    display:block; color:var(--ink); font-size:.82rem; text-decoration:none;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:.15rem;
+  }
+  .track__url:hover { color:var(--cyan); }
+
   /* modal */
   .modal-backdrop {
     position:fixed; inset:0; z-index:60; display:none;
@@ -670,6 +715,18 @@
       <button class="btn btn--ghost" id="export-btn">&#10515; EXPORTAR JSON</button>
     </div>
     <div class="board" id="board"></div>
+
+    <div class="playlist">
+      <div class="playlist__head">
+        <span class="playlist__title">&#127925; PLAYLIST DA VIAGEM</span>
+        <span class="playlist__jp">旅のプレイリスト</span>
+      </div>
+      <div class="playlist__add">
+        <input type="url" id="track-input" placeholder="Cole o link da música (Spotify, YouTube…)" />
+        <button class="btn" id="track-add-btn">+ ADICIONAR</button>
+      </div>
+      <div class="playlist__list" id="playlist-list"></div>
+    </div>
   </section>
 
   <!-- DADOS -->
@@ -774,6 +831,8 @@
   };
   var fbRef = null;
   var applyingRemote = false;
+  var fbPlaylistRef = null;
+  var applyingRemotePl = false;
 
   var DEFAULT_ITIN = [
     { id:"geral", city:"Geral", sub:"visão macro", hotel:null, cards:[
@@ -1123,6 +1182,75 @@
     URL.revokeObjectURL(a.href);
   });
 
+  /* ---- trip playlist ---- */
+  var PL_KEY = "jp2026-playlist-v1";
+  var playlist = loadPlaylist();
+  var plList = document.getElementById("playlist-list");
+
+  function loadPlaylist() {
+    try {
+      var raw = localStorage.getItem(PL_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
+    return [];
+  }
+  function savePlaylist() {
+    try { localStorage.setItem(PL_KEY, JSON.stringify(playlist)); } catch (e) {}
+    if (fbPlaylistRef && !applyingRemotePl) fbPlaylistRef.set(playlist);
+  }
+  function trackSource(url) {
+    var u = String(url).toLowerCase();
+    if (u.indexOf("spotify") > -1) return { label: "SPOTIFY", icon: "🟢" };
+    if (u.indexOf("youtube") > -1 || u.indexOf("youtu.be") > -1) return { label: "YOUTUBE", icon: "🔴" };
+    if (u.indexOf("music.apple") > -1) return { label: "APPLE MUSIC", icon: "🍎" };
+    if (u.indexOf("soundcloud") > -1) return { label: "SOUNDCLOUD", icon: "🟠" };
+    if (u.indexOf("deezer") > -1) return { label: "DEEZER", icon: "🟣" };
+    return { label: "MÚSICA", icon: "🎵" };
+  }
+  function renderPlaylist() {
+    plList.innerHTML = "";
+    if (!playlist.length) {
+      plList.innerHTML = '<div class="playlist__empty">Nenhuma música ainda — cole o primeiro link 🎧</div>';
+    } else {
+      playlist.forEach(function (t) {
+        var src = trackSource(t.url);
+        var row = document.createElement("div");
+        row.className = "track";
+        row.innerHTML =
+          '<div class="track__icon">' + src.icon + '</div>' +
+          '<div class="track__main">' +
+            '<div class="track__src">' + src.label + '</div>' +
+            '<a class="track__url" href="' + esc(t.url) + '" target="_blank" rel="noopener">' +
+              esc(t.url) + '</a>' +
+          '</div>' +
+          '<button class="icon-btn del" data-track="' + esc(t.id) + '" title="Remover">&#10005;</button>';
+        plList.appendChild(row);
+      });
+    }
+    savePlaylist();
+  }
+  function addTrack() {
+    var input = document.getElementById("track-input");
+    var url = input.value.trim();
+    if (!url) { input.focus(); return; }
+    if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+    playlist.push({ id: uid(), url: url });
+    input.value = "";
+    renderPlaylist();
+  }
+  document.getElementById("track-add-btn").addEventListener("click", addTrack);
+  document.getElementById("track-input").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); addTrack(); }
+  });
+  plList.addEventListener("click", function (e) {
+    var del = e.target.closest("[data-track]");
+    if (!del) return;
+    if (!confirm("Remover esta música da playlist?")) return;
+    var id = del.getAttribute("data-track");
+    playlist = playlist.filter(function (t) { return t.id !== id; });
+    renderPlaylist();
+  });
+
   function setSyncStatus(live) {
     var p = document.getElementById("sync-pill");
     if (!p) return;
@@ -1169,6 +1297,23 @@
         fbRef = null;
         setSyncStatus(false);
       });
+
+      fbPlaylistRef = firebase.database().ref("playlist");
+      fbPlaylistRef.on("value", function (snap) {
+        var data = snap.val();
+        if (data === null) { fbPlaylistRef.set(playlist); return; }
+        if (!Array.isArray(data)) {
+          data = Object.keys(data).map(function (k) { return data[k]; });
+        }
+        applyingRemotePl = true;
+        playlist = data;
+        renderPlaylist();
+        applyingRemotePl = false;
+      }, function (err) {
+        console.warn("Firebase playlist indisponível:", err && err.message);
+        fbPlaylistRef = null;
+      });
+
       setSyncStatus(true);
     } catch (e) {
       fbRef = null;
@@ -1177,6 +1322,7 @@
   }
 
   render();
+  renderPlaylist();
   initFirebase();
 
   /* ===================================================================
