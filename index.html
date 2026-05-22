@@ -764,13 +764,13 @@
   var STORE_KEY = "jp2026-itinerary-v1";
 
   // === Firebase — sincronização ao vivo entre os 4 ====================
-  // Cole a config do seu projeto Firebase (Realtime Database) abaixo.
-  // Enquanto os valores forem "COLE_AQUI", o site roda em modo LOCAL.
+  // databaseURL precisa apontar para o Realtime Database do projeto.
+  // Se o banco for criado em outra região, troque a databaseURL.
   var FIREBASE_CONFIG = {
-    apiKey: "COLE_AQUI",
-    authDomain: "COLE_AQUI",
-    databaseURL: "COLE_AQUI",
-    projectId: "COLE_AQUI"
+    apiKey: "AIzaSyBYUQvpXUGbFcELLChUHqPoDAbwhTuyLqw",
+    authDomain: "japan-5f18d.firebaseapp.com",
+    databaseURL: "https://japan-5f18d-default-rtdb.firebaseio.com",
+    projectId: "japan-5f18d"
   };
   var fbRef = null;
   var applyingRemote = false;
@@ -1164,6 +1164,10 @@
         });
         render();
         applyingRemote = false;
+      }, function (err) {
+        console.warn("Firebase sync indisponível:", err && err.message);
+        fbRef = null;
+        setSyncStatus(false);
       });
       setSyncStatus(true);
     } catch (e) {
