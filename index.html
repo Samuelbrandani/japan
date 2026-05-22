@@ -189,7 +189,7 @@
   .card {
     position:relative; border:1px solid var(--edge); border-radius:16px;
     background:var(--bg-2); padding:1.6rem 1.3rem 1.5rem; overflow:hidden;
-    cursor:pointer; min-height:252px;
+    cursor:pointer; min-height:300px;
     transition:transform .3s cubic-bezier(.2,.8,.2,1), border-color .3s;
   }
   .card::after {
@@ -228,8 +228,9 @@
     animation:egg-reveal .42s cubic-bezier(.2,.8,.2,1);
   }
   .card__reveal img {
-    width:100%; flex:1; min-height:0; object-fit:cover;
-    object-position:center top; filter:saturate(1.12) contrast(1.05);
+    width:100%; flex:1; min-height:0; object-fit:contain;
+    background:radial-gradient(circle at 50% 35%, #14111f, #07060f);
+    filter:saturate(1.12) contrast(1.05);
   }
   .card__reveal .quip {
     padding:.7rem .85rem .55rem; font-size:.78rem; line-height:1.45; color:var(--ink);
