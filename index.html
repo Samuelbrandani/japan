@@ -2273,8 +2273,10 @@
       faaah: "assets/sfx/faaah.mp3",
       lord: "assets/sfx/lord.mp3",
       bob: "assets/sfx/bob.mp3",
-      plane: "assets/sfx/plane.mp3"
+      plane: "assets/sfx/plane.mp3",
+      yamede: "assets/sfx/yamede.mp3"
     };
+    var crewSfxToggle = 0;
     function playSfx(name) {
       var src = SFX[name];
       if (!src) return;
@@ -2307,7 +2309,7 @@
         if (open) { open.remove(); return; }
         var eggs = (card.getAttribute("data-egg") || "✨").split(" ");
         emojiBurst(ev.clientX, ev.clientY, eggs, 15);
-        playSfx("crew");
+        playSfx(crewSfxToggle++ % 2 ? "yamede" : "crew");
         var name = card.querySelector(".card__name").textContent;
         var rev = document.createElement("div");
         rev.className = "card__reveal";
