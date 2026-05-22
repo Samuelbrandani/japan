@@ -2271,9 +2271,9 @@
       aura: "assets/sfx/aura.mp3",
       mj: "assets/sfx/mj.mp3",
       faaah: "assets/sfx/faaah.mp3",
-      trolla: "assets/sfx/trolla.mp3",
       lord: "assets/sfx/lord.mp3",
-      bob: "assets/sfx/bob.mp3"
+      bob: "assets/sfx/bob.mp3",
+      plane: "assets/sfx/plane.mp3"
     };
     function playSfx(name) {
       var src = SFX[name];
@@ -2369,7 +2369,7 @@
     var routeEl = document.querySelector(".route");
     if (routeEl) routeEl.addEventListener("click", function () {
       if (routeEl.querySelector(".egg-plane")) return;
-      playSfx("trolla");
+      playSfx("plane");
       var plane = document.createElement("span");
       plane.className = "egg-plane";
       plane.textContent = "✈️";
