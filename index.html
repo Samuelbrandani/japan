@@ -89,10 +89,15 @@
   /* --- nav --- */
   nav {
     position:sticky; top:0; z-index:30;
+    background:rgba(8,7,18,.85);
+    backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--edge);
+    box-shadow:0 6px 28px rgba(0,0,0,.45);
+  }
+  .nav-inner {
+    width:min(1140px,90vw); margin-inline:auto;
     display:flex; justify-content:space-between; align-items:center;
-    padding:14px 0;
-    background:linear-gradient(180deg, rgba(7,6,15,.95), rgba(7,6,15,.55) 70%, transparent);
-    backdrop-filter:blur(4px);
+    padding:13px 0;
   }
   .brand {
     font-family:"Bruno Ace",sans-serif; font-size:1rem; letter-spacing:.12em;
@@ -289,25 +294,37 @@
   .btn--ghost { background:transparent; }
 
   .board {
-    display:flex; gap:1rem; overflow-x:auto; padding-bottom:1.4rem;
-    scroll-snap-type:x proximity;
+    display:flex; flex-direction:column; gap:.9rem;
+    max-width:680px; margin-inline:auto;
   }
-  .board::-webkit-scrollbar { height:8px; }
-  .board::-webkit-scrollbar-thumb { background:var(--edge); border-radius:99px; }
 
   .col {
-    flex:0 0 290px; scroll-snap-align:start;
-    background:rgba(12,10,26,.75); border:1px solid var(--edge);
-    border-radius:14px; padding:1rem; display:flex; flex-direction:column; gap:.7rem;
+    background:rgba(12,10,26,.78); border:1px solid var(--edge);
+    border-radius:14px; overflow:hidden;
   }
-  .col__head { display:flex; justify-content:space-between; align-items:flex-start; gap:.5rem; }
+  .col__head {
+    display:flex; justify-content:space-between; align-items:center; gap:.6rem;
+    padding:.95rem 1rem; cursor:pointer; user-select:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .col__head:active { background:rgba(31,245,255,.05); }
+  .col__headleft { display:flex; align-items:center; gap:.7rem; min-width:0; }
+  .col__chev {
+    color:var(--cyan); font-size:.62rem; flex-shrink:0;
+    transition:transform .25s;
+  }
+  .col.collapsed .col__chev { transform:rotate(-90deg); }
   .col__title { font-family:"Bruno Ace",sans-serif; font-size:1rem; color:#fff; }
-  .col__sub { font-size:.7rem; color:var(--ink-dim); margin-top:.25rem; }
-  .col__menu { display:flex; gap:.3rem; flex-shrink:0; }
+  .col__sub { font-size:.68rem; color:var(--ink-dim); margin-top:.2rem; }
+  .col__body {
+    display:flex; flex-direction:column; gap:.7rem; padding:0 1rem 1rem;
+  }
+  .col.collapsed .col__body { display:none; }
+  .col__menu { display:flex; gap:.35rem; flex-shrink:0; }
   .icon-btn {
-    width:24px; height:24px; border-radius:6px; cursor:pointer;
+    width:32px; height:32px; border-radius:7px; cursor:pointer;
     background:transparent; border:1px solid var(--edge); color:var(--ink-dim);
-    font-size:.72rem; line-height:1; display:grid; place-items:center;
+    font-size:.82rem; line-height:1; display:grid; place-items:center; flex-shrink:0;
     transition:color .15s, border-color .15s;
   }
   .icon-btn:hover { color:var(--cyan); border-color:var(--cyan); }
@@ -344,21 +361,24 @@
   .kcard__foot { display:flex; justify-content:space-between; align-items:center; margin-top:.55rem; min-height:18px; }
   .kcard__maps { font-size:.62rem; color:var(--cyan); text-decoration:none; }
   .kcard__maps:hover { text-shadow:var(--glow-cyan); }
-  .kcard__acts { display:flex; gap:.3rem; opacity:0; transition:opacity .15s; }
-  .kcard:hover .kcard__acts { opacity:1; }
+  .kcard__acts { display:flex; gap:.35rem; }
+  @media (hover:hover) {
+    .kcard__acts { opacity:0; transition:opacity .15s; }
+    .kcard:hover .kcard__acts { opacity:1; }
+  }
 
   .add-card {
-    border:1px dashed var(--edge); border-radius:10px; padding:.6rem;
+    border:1px dashed var(--edge); border-radius:10px; padding:.85rem;
     text-align:center; cursor:pointer; color:var(--ink-dim);
-    font-family:"Bruno Ace SC",sans-serif; font-size:.54rem; letter-spacing:.12em;
+    font-family:"Bruno Ace SC",sans-serif; font-size:.58rem; letter-spacing:.12em;
     transition:color .2s, border-color .2s;
   }
   .add-card:hover { color:var(--cyan); border-color:var(--cyan); }
   .col--add {
-    flex:0 0 240px; display:grid; place-items:center;
+    display:grid; place-items:center; padding:1.15rem;
     border:1px dashed var(--edge); border-radius:14px; cursor:pointer;
     color:var(--ink-dim); font-family:"Bruno Ace SC",sans-serif;
-    font-size:.6rem; letter-spacing:.14em; min-height:120px;
+    font-size:.6rem; letter-spacing:.14em;
     transition:color .2s, border-color .2s;
   }
   .col--add:hover { color:var(--magenta); border-color:var(--magenta); }
@@ -427,17 +447,20 @@
 </div>
 
 <main>
-<div class="wrap">
 
   <nav>
-    <a class="brand" href="#top">JP<i>//</i>2026</a>
-    <div class="nav-links">
-      <a href="#crew">CREW</a>
-      <a href="#rota">ROTA</a>
-      <a href="#roteiro">ROTEIRO</a>
-      <a href="#dados">DADOS</a>
+    <div class="nav-inner">
+      <a class="brand" href="#top">JP<i>//</i>2026</a>
+      <div class="nav-links">
+        <a href="#crew">CREW</a>
+        <a href="#rota">ROTA</a>
+        <a href="#roteiro">ROTEIRO</a>
+        <a href="#dados">DADOS</a>
+      </div>
     </div>
   </nav>
+
+<div class="wrap">
 
   <!-- HERO -->
   <header class="hero" id="top">
@@ -694,6 +717,10 @@
 
   var itin = loadItin();
 
+  // collapsed state for the mobile accordion (in-memory; first city open)
+  var collapsed = {};
+  itin.forEach(function (c, i) { collapsed[c.id] = i !== 0; });
+
   function loadItin() {
     try {
       var raw = localStorage.getItem(STORE_KEY);
@@ -731,7 +758,7 @@
     board.innerHTML = "";
     itin.forEach(function (col) {
       var el = document.createElement("div");
-      el.className = "col";
+      el.className = "col" + (collapsed[col.id] ? " collapsed" : "");
 
       var hotelHtml = col.hotel ? (
         '<div class="hotel-card"><div class="lbl">&#8962; HOTEL</div>' +
@@ -760,16 +787,26 @@
           '</div></div>';
       }).join("");
 
+      var n = col.cards.length;
       el.innerHTML =
-        '<div class="col__head"><div>' +
-          '<div class="col__title">' + esc(col.city) + '</div>' +
-          '<div class="col__sub">' + esc(col.sub) + '</div>' +
-        '</div><div class="col__menu">' +
-          '<button class="icon-btn" data-act="edit-col" data-col="' + esc(col.id) + '" title="Editar cidade">&#9998;</button>' +
-          '<button class="icon-btn del" data-act="del-col" data-col="' + esc(col.id) + '" title="Excluir cidade">&#10005;</button>' +
-        '</div></div>' +
-        hotelHtml + cardsHtml +
-        '<div class="add-card" data-act="add-card" data-col="' + esc(col.id) + '">+ adicionar cartão</div>';
+        '<div class="col__head" data-act="toggle-col" data-col="' + esc(col.id) + '">' +
+          '<div class="col__headleft">' +
+            '<span class="col__chev">&#9660;</span>' +
+            '<div>' +
+              '<div class="col__title">' + esc(col.city) + '</div>' +
+              '<div class="col__sub">' + esc(col.sub) + ' &middot; ' +
+                n + (n === 1 ? ' cartão' : ' cartões') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="col__menu">' +
+            '<button class="icon-btn" data-act="edit-col" data-col="' + esc(col.id) + '" title="Editar cidade">&#9998;</button>' +
+            '<button class="icon-btn del" data-act="del-col" data-col="' + esc(col.id) + '" title="Excluir cidade">&#10005;</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="col__body">' +
+          hotelHtml + cardsHtml +
+          '<div class="add-card" data-act="add-card" data-col="' + esc(col.id) + '">+ adicionar cartão</div>' +
+        '</div>';
 
       board.appendChild(el);
     });
@@ -799,6 +836,10 @@
       openColModal(btn.getAttribute("data-col"));
     } else if (act === "del-col") {
       delCol(btn.getAttribute("data-col"));
+    } else if (act === "toggle-col") {
+      var cid = btn.getAttribute("data-col");
+      collapsed[cid] = !collapsed[cid];
+      btn.closest(".col").classList.toggle("collapsed");
     }
   });
 
