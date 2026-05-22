@@ -275,6 +275,128 @@
     font-family:"Bruno Ace SC",sans-serif; letter-spacing:.14em;
   }
 
+  /* --- itinerary board (kanban + crud) --- */
+  .board-tools { display:flex; flex-wrap:wrap; gap:.7rem; margin-bottom:1.6rem; }
+  .btn {
+    font-family:"Bruno Ace SC",sans-serif; font-size:.6rem; letter-spacing:.16em;
+    padding:.62rem 1rem; border-radius:9px; cursor:pointer; text-decoration:none;
+    display:inline-block;
+    background:var(--bg-2); color:var(--ink); border:1px solid var(--edge);
+    transition:border-color .2s, color .2s, box-shadow .2s;
+  }
+  .btn:hover { border-color:var(--cyan); color:var(--cyan); box-shadow:var(--glow-cyan); }
+  .btn--magenta:hover { border-color:var(--magenta); color:var(--magenta); box-shadow:var(--glow-magenta); }
+  .btn--ghost { background:transparent; }
+
+  .board {
+    display:flex; gap:1rem; overflow-x:auto; padding-bottom:1.4rem;
+    scroll-snap-type:x proximity;
+  }
+  .board::-webkit-scrollbar { height:8px; }
+  .board::-webkit-scrollbar-thumb { background:var(--edge); border-radius:99px; }
+
+  .col {
+    flex:0 0 290px; scroll-snap-align:start;
+    background:rgba(12,10,26,.75); border:1px solid var(--edge);
+    border-radius:14px; padding:1rem; display:flex; flex-direction:column; gap:.7rem;
+  }
+  .col__head { display:flex; justify-content:space-between; align-items:flex-start; gap:.5rem; }
+  .col__title { font-family:"Bruno Ace",sans-serif; font-size:1rem; color:#fff; }
+  .col__sub { font-size:.7rem; color:var(--ink-dim); margin-top:.25rem; }
+  .col__menu { display:flex; gap:.3rem; flex-shrink:0; }
+  .icon-btn {
+    width:24px; height:24px; border-radius:6px; cursor:pointer;
+    background:transparent; border:1px solid var(--edge); color:var(--ink-dim);
+    font-size:.72rem; line-height:1; display:grid; place-items:center;
+    transition:color .15s, border-color .15s;
+  }
+  .icon-btn:hover { color:var(--cyan); border-color:var(--cyan); }
+  .icon-btn.del:hover { color:var(--magenta); border-color:var(--magenta); }
+
+  .hotel-card {
+    border:1px solid rgba(255,210,74,.35); border-radius:10px;
+    background:rgba(255,210,74,.06); padding:.7rem .8rem;
+  }
+  .hotel-card .lbl {
+    font-family:"Bruno Ace SC",sans-serif; font-size:.52rem;
+    letter-spacing:.18em; color:var(--amber);
+  }
+  .hotel-card .name { font-size:.86rem; color:var(--ink); margin-top:.3rem; line-height:1.4; }
+  .hotel-card a { color:var(--amber); font-size:.64rem; text-decoration:none; display:inline-block; margin-top:.4rem; }
+  .hotel-card a:hover { text-decoration:underline; }
+
+  .kcard {
+    position:relative; border:1px solid var(--edge); border-radius:10px;
+    background:var(--bg); padding:.7rem .8rem; transition:border-color .2s;
+  }
+  .kcard:hover { border-color:rgba(31,245,255,.45); }
+  .kcard__tags { display:flex; flex-wrap:wrap; gap:.35rem; margin-bottom:.45rem; }
+  .pill {
+    font-family:"Bruno Ace SC",sans-serif; font-size:.5rem; letter-spacing:.1em;
+    padding:.22rem .5rem; border-radius:99px; border:1px solid var(--edge); color:var(--ink-dim);
+  }
+  .pill--day { color:var(--cyan); border-color:rgba(31,245,255,.45); }
+  .pill--d0 { color:var(--violet); border-color:rgba(155,92,255,.5); }
+  .pill--d2 { color:var(--amber); border-color:rgba(255,210,74,.5); }
+  .pill--d3 { color:var(--magenta); border-color:rgba(255,45,149,.5); }
+  .pill--tickets { color:var(--magenta); border-color:rgba(255,45,149,.5); }
+  .kcard__title { font-size:.86rem; line-height:1.45; color:var(--ink); }
+  .kcard__foot { display:flex; justify-content:space-between; align-items:center; margin-top:.55rem; min-height:18px; }
+  .kcard__maps { font-size:.62rem; color:var(--cyan); text-decoration:none; }
+  .kcard__maps:hover { text-shadow:var(--glow-cyan); }
+  .kcard__acts { display:flex; gap:.3rem; opacity:0; transition:opacity .15s; }
+  .kcard:hover .kcard__acts { opacity:1; }
+
+  .add-card {
+    border:1px dashed var(--edge); border-radius:10px; padding:.6rem;
+    text-align:center; cursor:pointer; color:var(--ink-dim);
+    font-family:"Bruno Ace SC",sans-serif; font-size:.54rem; letter-spacing:.12em;
+    transition:color .2s, border-color .2s;
+  }
+  .add-card:hover { color:var(--cyan); border-color:var(--cyan); }
+  .col--add {
+    flex:0 0 240px; display:grid; place-items:center;
+    border:1px dashed var(--edge); border-radius:14px; cursor:pointer;
+    color:var(--ink-dim); font-family:"Bruno Ace SC",sans-serif;
+    font-size:.6rem; letter-spacing:.14em; min-height:120px;
+    transition:color .2s, border-color .2s;
+  }
+  .col--add:hover { color:var(--magenta); border-color:var(--magenta); }
+
+  /* modal */
+  .modal-backdrop {
+    position:fixed; inset:0; z-index:60; display:none;
+    background:rgba(4,3,10,.82); backdrop-filter:blur(3px);
+    align-items:center; justify-content:center; padding:1.2rem;
+  }
+  .modal-backdrop.open { display:flex; }
+  .modal {
+    width:min(440px,94vw); background:var(--bg-2);
+    border:1px solid rgba(31,245,255,.4); border-radius:16px;
+    box-shadow:0 0 50px rgba(31,245,255,.18); padding:1.6rem;
+  }
+  .modal h3 {
+    font-family:"Bruno Ace",sans-serif; font-size:1.05rem; color:#fff;
+    margin-bottom:1.2rem;
+  }
+  .field { margin-bottom:1rem; }
+  .field label {
+    display:block; font-family:"Bruno Ace SC",sans-serif; font-size:.54rem;
+    letter-spacing:.14em; color:var(--ink-dim); margin-bottom:.4rem;
+  }
+  .field input[type=text], .field input[type=url], .field select {
+    width:100%; padding:.6rem .7rem; border-radius:8px;
+    background:var(--bg); border:1px solid var(--edge); color:var(--ink);
+    font-family:"Zen Kaku Gothic New",sans-serif; font-size:.88rem;
+  }
+  .field input:focus, .field select:focus {
+    outline:none; border-color:var(--cyan); box-shadow:0 0 0 2px rgba(31,245,255,.15);
+  }
+  .field--check { display:flex; align-items:center; gap:.5rem; }
+  .field--check label { margin:0; font-size:.68rem; letter-spacing:.05em; }
+  .field--check input { width:16px; height:16px; accent-color:var(--magenta); }
+  .modal__actions { display:flex; gap:.6rem; justify-content:flex-end; margin-top:1.4rem; }
+
   /* --- responsive --- */
   @media (max-width:760px) {
     .nav-links { display:none; }
@@ -312,6 +434,7 @@
     <div class="nav-links">
       <a href="#crew">CREW</a>
       <a href="#rota">ROTA</a>
+      <a href="#roteiro">ROTEIRO</a>
       <a href="#dados">DADOS</a>
     </div>
   </nav>
@@ -422,10 +545,27 @@
     </div>
   </section>
 
+  <!-- ROTEIRO -->
+  <section id="roteiro">
+    <div class="sec-head">
+      <span class="num">03</span>
+      <h2>O ROTEIRO</h2>
+      <span class="jp">旅程</span>
+      <span class="rule"></span>
+    </div>
+    <div class="board-tools">
+      <a class="btn" href="https://www.google.com/maps/dir/Tokyo,+Japan/Kyoto,+Japan/Osaka,+Japan/Tokyo,+Japan" target="_blank" rel="noopener">&#9656; ROTA NO GOOGLE MAPS</a>
+      <button class="btn" id="add-col-btn">+ NOVA CIDADE</button>
+      <button class="btn btn--ghost" id="export-btn">&#10515; EXPORTAR JSON</button>
+      <button class="btn btn--magenta btn--ghost" id="reset-btn">&#8634; RESTAURAR</button>
+    </div>
+    <div class="board" id="board"></div>
+  </section>
+
   <!-- DADOS -->
   <section id="dados">
     <div class="sec-head">
-      <span class="num">03</span>
+      <span class="num">04</span>
       <h2>OS NÚMEROS</h2>
       <span class="jp">数字</span>
       <span class="rule"></span>
@@ -447,6 +587,18 @@
   </div>
 </footer>
 </main>
+
+<!-- CRUD modal -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal" role="dialog" aria-modal="true">
+    <h3 id="modal-title">—</h3>
+    <div id="modal-fields"></div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" id="modal-cancel">CANCELAR</button>
+      <button class="btn" id="modal-save">SALVAR</button>
+    </div>
+  </div>
+</div>
 
 <script>
   // departure: 18 Jun 2026, 16:35 São Paulo time (BRT, UTC-3)
@@ -489,6 +641,320 @@
   // duplicate ticker row for seamless loop
   var t = document.getElementById("ticker");
   t.innerHTML += t.innerHTML;
+
+  /* ===================================================================
+     ITINERARY BOARD — kanban + full CRUD, persisted to localStorage
+     =================================================================== */
+  function mapsSearch(q) {
+    return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+  }
+
+  var STORE_KEY = "jp2026-itinerary-v1";
+
+  var DEFAULT_ITIN = [
+    { id:"geral", city:"Geral", sub:"visão macro", hotel:null, cards:[
+      { id:"g1", title:"Chegada — 19:20 do dia 20", day:"INFO", tickets:false, maps:"" },
+      { id:"g2", title:"Saída — 21:45 do dia 30",   day:"INFO", tickets:false, maps:"" }
+    ]},
+    { id:"tokyo1", city:"Tóquio", sub:"1 dia · 20–21",
+      hotel:{ name:"Akihabara Nakagawa Inn", maps:mapsSearch("Akihabara Nakagawa Inn Tokyo") },
+      cards:[
+        { id:"t1a", title:"Dale no barzola", day:"Dia 1", tickets:false, maps:"" }
+      ]},
+    { id:"kyoto", city:"Kyoto", sub:"3 dias · 21–23",
+      hotel:{ name:"Mitsui Garden Hotel Kyoto Shijo", maps:mapsSearch("Mitsui Garden Hotel Kyoto Shijo") },
+      cards:[
+        { id:"k1", title:"Gion — bairro histórico das gueixas", day:"Dia 1", tickets:false, maps:mapsSearch("Gion Kyoto") },
+        { id:"k2", title:"Chopstick Craft", day:"Dia 1", tickets:true, maps:mapsSearch("Chopstick craft workshop Kyoto") },
+        { id:"k3", title:"Samurai museu", day:"Dia 1", tickets:false, maps:mapsSearch("Samurai Ninja Museum Kyoto") },
+        { id:"k4", title:"Kinkaku-ji + Castelo Nijo + templos de scooter", day:"Dia 2", tickets:false, maps:mapsSearch("Kinkaku-ji Kyoto") },
+        { id:"k5", title:"Pontocho — comidinha e rolê pra noite", day:"Dia 2", tickets:false, maps:mapsSearch("Pontocho Kyoto") },
+        { id:"k6", title:"Tour Parque Nara", day:"Dia 1", tickets:true, maps:mapsSearch("Nara Park") }
+      ]},
+    { id:"osaka", city:"Osaka", sub:"3 dias · 23–26",
+      hotel:{ name:"Apartment Hotel 11 Namba Minami 3", maps:mapsSearch("Apartment Hotel Namba Minami Osaka") },
+      cards:[
+        { id:"o1", title:"Rolê à noite aleatoriamente (talvez Bible Club)", day:"Dia 0", tickets:false, maps:"" },
+        { id:"o2", title:"Castelo de Osaka", day:"Dia 1", tickets:true, maps:mapsSearch("Osaka Castle") },
+        { id:"o3", title:"Tour Gastronômico", day:"Dia 1", tickets:false, maps:"" },
+        { id:"o4", title:"Bible Club Osaka", day:"Dia 2", tickets:false, maps:mapsSearch("Bible Club Osaka") },
+        { id:"o5", title:"Shinsaibashi-suji / Dotonbori — comprinhas", day:"Dia 1", tickets:false, maps:mapsSearch("Dotonbori Osaka") },
+        { id:"o6", title:"Yodobashi Umeda — câmeras e eletrônicos", day:"Dia 1", tickets:false, maps:mapsSearch("Yodobashi Umeda") },
+        { id:"o7", title:"Karaokê — noite", day:"Dia 2", tickets:false, maps:"" },
+        { id:"o8", title:"Universal Studios — talvez", day:"Dia ?", tickets:false, maps:mapsSearch("Universal Studios Japan") }
+      ]},
+    { id:"tokyo2", city:"Tóquio", sub:"4 dias · 26–30",
+      hotel:{ name:"Nesthotel alt Kuramae Station", maps:mapsSearch("Nesthotel Kuramae Tokyo") },
+      cards:[
+        { id:"t2a", title:"Estacionamentinho", day:"", tickets:false, maps:"" },
+        { id:"t2b", title:"Shibuya Sky", day:"", tickets:true, maps:mapsSearch("Shibuya Sky") },
+        { id:"t2c", title:"The church", day:"", tickets:false, maps:"" }
+      ]}
+  ];
+
+  var itin = loadItin();
+
+  function loadItin() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
+    return JSON.parse(JSON.stringify(DEFAULT_ITIN));
+  }
+  function saveItin() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(itin)); } catch (e) {}
+  }
+  function uid() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  }
+  function findCol(id) {
+    for (var i = 0; i < itin.length; i++) { if (itin[i].id === id) return itin[i]; }
+    return null;
+  }
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function dayPillClass(day) {
+    var d = String(day || "");
+    if (d.indexOf("0") > -1) return "pill pill--day pill--d0";
+    if (d.indexOf("2") > -1) return "pill pill--day pill--d2";
+    if (d.indexOf("3") > -1) return "pill pill--day pill--d3";
+    if (d.indexOf("1") > -1) return "pill pill--day";
+    return "pill";
+  }
+
+  var board = document.getElementById("board");
+
+  function render() {
+    board.innerHTML = "";
+    itin.forEach(function (col) {
+      var el = document.createElement("div");
+      el.className = "col";
+
+      var hotelHtml = col.hotel ? (
+        '<div class="hotel-card"><div class="lbl">&#8962; HOTEL</div>' +
+        '<div class="name">' + esc(col.hotel.name) + '</div>' +
+        (col.hotel.maps
+          ? '<a href="' + esc(col.hotel.maps) + '" target="_blank" rel="noopener">&#9656; ver no maps</a>'
+          : '') +
+        '</div>'
+      ) : "";
+
+      var cardsHtml = col.cards.map(function (c) {
+        var tags = '<span class="' + dayPillClass(c.day) + '">' +
+          (c.day ? esc(c.day) : "—") + '</span>';
+        if (c.tickets) tags += '<span class="pill pill--tickets">&#127903; comprar entradas</span>';
+        return '<div class="kcard" data-col="' + esc(col.id) + '" data-card="' + esc(c.id) + '">' +
+          '<div class="kcard__tags">' + tags + '</div>' +
+          '<div class="kcard__title">' + esc(c.title) + '</div>' +
+          '<div class="kcard__foot">' +
+            (c.maps
+              ? '<a class="kcard__maps" href="' + esc(c.maps) + '" target="_blank" rel="noopener">&#9656; maps</a>'
+              : '<span></span>') +
+            '<span class="kcard__acts">' +
+              '<button class="icon-btn" data-act="edit-card" title="Editar">&#9998;</button>' +
+              '<button class="icon-btn del" data-act="del-card" title="Excluir">&#10005;</button>' +
+            '</span>' +
+          '</div></div>';
+      }).join("");
+
+      el.innerHTML =
+        '<div class="col__head"><div>' +
+          '<div class="col__title">' + esc(col.city) + '</div>' +
+          '<div class="col__sub">' + esc(col.sub) + '</div>' +
+        '</div><div class="col__menu">' +
+          '<button class="icon-btn" data-act="edit-col" data-col="' + esc(col.id) + '" title="Editar cidade">&#9998;</button>' +
+          '<button class="icon-btn del" data-act="del-col" data-col="' + esc(col.id) + '" title="Excluir cidade">&#10005;</button>' +
+        '</div></div>' +
+        hotelHtml + cardsHtml +
+        '<div class="add-card" data-act="add-card" data-col="' + esc(col.id) + '">+ adicionar cartão</div>';
+
+      board.appendChild(el);
+    });
+
+    var addCol = document.createElement("div");
+    addCol.className = "col--add";
+    addCol.textContent = "+ NOVA CIDADE";
+    addCol.addEventListener("click", function () { openColModal(null); });
+    board.appendChild(addCol);
+
+    saveItin();
+  }
+
+  board.addEventListener("click", function (e) {
+    var btn = e.target.closest("[data-act]");
+    if (!btn) return;
+    var act = btn.getAttribute("data-act");
+    if (act === "add-card") {
+      openCardModal(btn.getAttribute("data-col"), null);
+    } else if (act === "edit-card") {
+      var k = btn.closest(".kcard");
+      openCardModal(k.getAttribute("data-col"), k.getAttribute("data-card"));
+    } else if (act === "del-card") {
+      var k2 = btn.closest(".kcard");
+      delCard(k2.getAttribute("data-col"), k2.getAttribute("data-card"));
+    } else if (act === "edit-col") {
+      openColModal(btn.getAttribute("data-col"));
+    } else if (act === "del-col") {
+      delCol(btn.getAttribute("data-col"));
+    }
+  });
+
+  /* ---- modal infrastructure ---- */
+  var modal = document.getElementById("modal");
+  var modalTitle = document.getElementById("modal-title");
+  var modalFields = document.getElementById("modal-fields");
+  var saveHandler = null;
+
+  function closeModal() { modal.classList.remove("open"); saveHandler = null; }
+  document.getElementById("modal-cancel").addEventListener("click", closeModal);
+  document.getElementById("modal-save").addEventListener("click", function () {
+    if (saveHandler) saveHandler();
+  });
+  modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
+  modalFields.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && e.target.tagName === "INPUT" && saveHandler) {
+      e.preventDefault(); saveHandler();
+    }
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
+  });
+
+  function fieldInput(id, label, val, type) {
+    return '<div class="field"><label for="' + id + '">' + label + '</label>' +
+      '<input type="' + (type || "text") + '" id="' + id + '" value="' + esc(val || "") + '" /></div>';
+  }
+
+  /* ---- card CRUD ---- */
+  function openCardModal(colId, cardId) {
+    var col = findCol(colId);
+    var card = null;
+    if (cardId) {
+      for (var i = 0; i < col.cards.length; i++) {
+        if (col.cards[i].id === cardId) { card = col.cards[i]; break; }
+      }
+    }
+    modalTitle.textContent = card ? "Editar cartão" : "Novo cartão";
+
+    var colOpts = itin.map(function (c) {
+      return '<option value="' + esc(c.id) + '"' + (c.id === colId ? " selected" : "") + '>' +
+        esc(c.city) + " · " + esc(c.sub) + '</option>';
+    }).join("");
+
+    modalFields.innerHTML =
+      fieldInput("f-title", "Atividade", card ? card.title : "") +
+      fieldInput("f-day", "Dia / etiqueta (ex: Dia 1, INFO)", card ? card.day : "") +
+      '<div class="field"><label for="f-col">Cidade</label><select id="f-col">' + colOpts + '</select></div>' +
+      fieldInput("f-maps", "Link do Google Maps (opcional)", card ? card.maps : "", "url") +
+      '<div class="field field--check"><input type="checkbox" id="f-tickets"' +
+        (card && card.tickets ? " checked" : "") +
+        ' /><label for="f-tickets">Comprar entradas</label></div>';
+
+    modal.classList.add("open");
+    document.getElementById("f-title").focus();
+
+    saveHandler = function () {
+      var titleEl = document.getElementById("f-title");
+      var title = titleEl.value.trim();
+      if (!title) { titleEl.focus(); return; }
+      var payload = {
+        title: title,
+        day: document.getElementById("f-day").value.trim(),
+        maps: document.getElementById("f-maps").value.trim(),
+        tickets: document.getElementById("f-tickets").checked
+      };
+      var targetColId = document.getElementById("f-col").value;
+      if (card) {
+        card.title = payload.title; card.day = payload.day;
+        card.maps = payload.maps; card.tickets = payload.tickets;
+        if (targetColId !== colId) {
+          col.cards = col.cards.filter(function (c) { return c.id !== cardId; });
+          findCol(targetColId).cards.push(card);
+        }
+      } else {
+        payload.id = uid();
+        findCol(targetColId).cards.push(payload);
+      }
+      closeModal();
+      render();
+    };
+  }
+
+  function delCard(colId, cardId) {
+    var col = findCol(colId);
+    var card = null;
+    for (var i = 0; i < col.cards.length; i++) {
+      if (col.cards[i].id === cardId) { card = col.cards[i]; break; }
+    }
+    if (!confirm('Excluir "' + (card ? card.title : "") + '"?')) return;
+    col.cards = col.cards.filter(function (c) { return c.id !== cardId; });
+    render();
+  }
+
+  /* ---- column CRUD ---- */
+  function openColModal(colId) {
+    var col = colId ? findCol(colId) : null;
+    modalTitle.textContent = col ? "Editar cidade" : "Nova cidade";
+    var h = (col && col.hotel) ? col.hotel : { name: "", maps: "" };
+
+    modalFields.innerHTML =
+      fieldInput("f-city", "Cidade", col ? col.city : "") +
+      fieldInput("f-sub", "Período (ex: 3 dias · 21–23)", col ? col.sub : "") +
+      fieldInput("f-hotel", "Hotel (opcional)", h.name) +
+      fieldInput("f-hotel-maps", "Link do hotel no Maps (opcional)", h.maps, "url");
+
+    modal.classList.add("open");
+    document.getElementById("f-city").focus();
+
+    saveHandler = function () {
+      var cityEl = document.getElementById("f-city");
+      var city = cityEl.value.trim();
+      if (!city) { cityEl.focus(); return; }
+      var sub = document.getElementById("f-sub").value.trim();
+      var hn = document.getElementById("f-hotel").value.trim();
+      var hm = document.getElementById("f-hotel-maps").value.trim();
+      var hotel = hn ? { name: hn, maps: hm } : null;
+      if (col) {
+        col.city = city; col.sub = sub; col.hotel = hotel;
+      } else {
+        itin.push({ id: uid(), city: city, sub: sub, hotel: hotel, cards: [] });
+      }
+      closeModal();
+      render();
+    };
+  }
+
+  function delCol(colId) {
+    var col = findCol(colId);
+    if (!confirm('Excluir a cidade "' + col.city + '" e todos os cartões dela?')) return;
+    itin = itin.filter(function (c) { return c.id !== colId; });
+    render();
+  }
+
+  /* ---- board tools ---- */
+  document.getElementById("add-col-btn").addEventListener("click", function () {
+    openColModal(null);
+  });
+  document.getElementById("reset-btn").addEventListener("click", function () {
+    if (!confirm("Restaurar o roteiro original? Suas mudanças serão perdidas.")) return;
+    itin = JSON.parse(JSON.stringify(DEFAULT_ITIN));
+    render();
+  });
+  document.getElementById("export-btn").addEventListener("click", function () {
+    var blob = new Blob([JSON.stringify(itin, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "roteiro-japao-2026.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  });
+
+  render();
 </script>
 </body>
 </html>

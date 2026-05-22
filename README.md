@@ -20,6 +20,18 @@ Página única (`index.html`), sem build, pronta para o GitHub Pages.
 3. **Branch**: `master` · pasta `/ (root)` → **Save**
 4. Site sai em `https://samuelbrandani.github.io/japan/`
 
+## Roteiro (kanban + CRUD)
+
+Seção **ROTEIRO** = quadro estilo Trello com CRUD completo:
+
+- **Criar / editar / excluir** cartões e cidades direto na página
+- Cada cartão: dia, flag "comprar entradas" e link do Google Maps
+- Dados gravados no `localStorage` do navegador (persistem entre visitas)
+- **Exportar JSON** baixa o roteiro · **Restaurar** volta ao padrão
+- **Rota no Google Maps** abre direções Tóquio → Kyoto → Osaka → Tóquio
+
+Roteiro inicial fica no `<script>`, constante `DEFAULT_ITIN`.
+
 ## Editar
 
 Tudo num arquivo só: `index.html` (HTML + CSS + JS inline).
